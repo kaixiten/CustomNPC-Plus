@@ -19,28 +19,38 @@ public class SubGuiNpcResistanceProperties extends SubGuiInterface implements IS
     public void initGui()
     {
         super.initGui();
-        addLabel(new GuiNpcLabel(0,"enchantment.knockback", guiLeft + 4, guiTop + 15));
-        addSlider(new GuiNpcSlider(this, 0, guiLeft + 94, guiTop + 10, (int)(resistances.knockback * 100 - 100)  + "%", resistances.knockback / 2));
+        int y = guiTop + 10;
 
-        addLabel(new GuiNpcLabel(1,"item.arrow.name", guiLeft + 4, guiTop + 37));
-        addSlider(new GuiNpcSlider(this, 1, guiLeft + 94, guiTop + 32, (int)(resistances.arrow * 100 - 100)  + "%", resistances.arrow / 2));
+        addSlider(new GuiNpcSlider(this, 0, guiLeft + 94, y, (int)(resistances.knockback * 100 - 100)  + "%", resistances.knockback / 2));
+        addLabel(new GuiNpcLabel(0,"enchantment.knockback", guiLeft + 4, y + 5));
+        getSlider(0).enabled = !resistances.disableDamage;
 
-        addLabel(new GuiNpcLabel(2,"stats.melee", guiLeft + 4, guiTop + 59));
-        addSlider(new GuiNpcSlider(this, 2, guiLeft + 94, guiTop + 54, (int)(resistances.playermelee * 100 - 100)  + "%", resistances.playermelee / 2));
+        addSlider(new GuiNpcSlider(this, 1, guiLeft + 94, y += 22, (int)(resistances.arrow * 100 - 100)  + "%", resistances.arrow / 2));
+        addLabel(new GuiNpcLabel(1,"item.arrow.name", guiLeft + 4, y + 5));
+        getSlider(1).enabled = !resistances.disableDamage;
 
-        addLabel(new GuiNpcLabel(3,"stats.explosion", guiLeft + 4, guiTop + 81));
-        addSlider(new GuiNpcSlider(this, 3, guiLeft + 94, guiTop + 76, (int)(resistances.explosion * 100 - 100)  + "%", resistances.explosion / 2));
+        addSlider(new GuiNpcSlider(this, 2, guiLeft + 94, y += 22, (int)(resistances.playermelee * 100 - 100)  + "%", resistances.playermelee / 2));
+        addLabel(new GuiNpcLabel(2,"stats.melee", guiLeft + 4, y + 5));
+        getSlider(2).enabled = !resistances.disableDamage;
 
-        if(resistances.disableDamage){
-			addLabel(new GuiNpcLabel(4,"stats.disabletrue", guiLeft + 4, guiTop + 103));
-		}
+        addSlider(new GuiNpcSlider(this, 3, guiLeft + 94, y += 22, (int)(resistances.explosion * 100 - 100)  + "%", resistances.explosion / 2));
+        addLabel(new GuiNpcLabel(3,"stats.explosion", guiLeft + 4, y + 5));
+        getSlider(3).enabled = !resistances.disableDamage;
+
+        addButton(new GuiNpcButton(21, guiLeft + 94, guiTop + 190, 56, 20, new String[]{"gui.no","gui.yes"}, this.resistances.disableDamage? 1:0));
+        addLabel(new GuiNpcLabel(21,"stats.disabledamage", guiLeft + 4, guiTop + 190 + 5));
 
 		addButton(new GuiNpcButton(66, guiLeft + 190, guiTop + 190, 60, 20, "gui.done"));
     }
-    
+
 	protected void actionPerformed(GuiButton guibutton)
     {
 		int id = guibutton.id;
+        if(id == 21)
+        {
+            resistances.disableDamage = !resistances.disableDamage;
+            initGui();
+        }
         if(id == 66)
         {
         	close();
@@ -55,7 +65,7 @@ public class SubGuiNpcResistanceProperties extends SubGuiInterface implements IS
 	@Override
 	public void mousePressed(GuiNpcSlider slider) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -72,7 +82,7 @@ public class SubGuiNpcResistanceProperties extends SubGuiInterface implements IS
 		if(slider.id == 3){
 			resistances.explosion = slider.sliderValue * 2;
 		}
-			
+
 	}
 
 }

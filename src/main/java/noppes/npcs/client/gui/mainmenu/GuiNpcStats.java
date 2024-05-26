@@ -49,8 +49,6 @@ public class GuiNpcStats extends GuiNPCInterface2 implements ITextfieldListener,
 
 		this.addButton(new GuiNpcButton(15, guiLeft + 82, y+=34, 56, 20, "selectServer.edit"));
 		addLabel(new GuiNpcLabel(15,"potion.resistance", guiLeft + 5, y + 5));
-		this.addButton(new GuiNpcButton(21, guiLeft + 217, y, 56, 20, new String[]{"gui.no","gui.yes"}, this.stats.resistances.disableDamage? 1:0));
-		addLabel(new GuiNpcLabel(21,"stats.disabledamage", guiLeft + 140, y + 5));
 		addTextField(new GuiNpcTextField(16, this, guiLeft + 355, y, 56, 20, String.format("%.0f", stats.combatRegen) + "").setFloatsOnly());
 		addLabel(new GuiNpcLabel(16,"stats.combatregen", guiLeft + 275, y + 5));
 
@@ -133,9 +131,6 @@ public class GuiNpcStats extends GuiNPCInterface2 implements ITextfieldListener,
 		}
 		else if (button.id == 18) {
 			stats.potionImmune = ((GuiNpcButtonYesNo)guibutton).getBoolean();
-		}
-		else if(button.id == 21){
-			stats.resistances.disableDamage = ((GuiNpcButton)guibutton).getValue() == 1;
 		}
 		else if (button.id == 22) {
 			stats.ignoreCobweb = (button.getValue() == 0);
