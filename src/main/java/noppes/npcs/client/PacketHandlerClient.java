@@ -32,7 +32,6 @@ import noppes.npcs.config.ConfigClient;
 import noppes.npcs.constants.EnumGuiType;
 import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.constants.EnumPacketServer;
-import noppes.npcs.constants.SyncType;
 import noppes.npcs.controllers.RecipeController;
 import noppes.npcs.controllers.SyncController;
 import noppes.npcs.controllers.data.Animation;

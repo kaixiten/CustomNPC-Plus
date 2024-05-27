@@ -1,12 +1,9 @@
 package noppes.npcs.controllers.data;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import noppes.npcs.CustomNpcs;
-import noppes.npcs.DataDisplay;
 import noppes.npcs.EventHooks;
 import noppes.npcs.api.handler.data.IAnimation;
 import noppes.npcs.api.handler.data.IAnimationData;

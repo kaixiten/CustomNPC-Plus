@@ -200,6 +200,12 @@ public class AnimationData implements IAnimationData {
     }
 
     public void viewAnimation(Animation animation, AnimationData animationData, NBTTagCompound animationNBT, boolean enabled, int currentFrame, int time) {
+        if (animation != null
+            && (currentFrame >= animation.frames.size()
+                || currentFrame >= 0 && animation.frames.get(currentFrame).tickDuration() <= time)) {
+            return;
+        }
+
         boolean prevEnabled = animationData.allowAnimation;
         animationData.allowAnimation = enabled;
         NBTTagCompound data = animationData.viewWriteNBT(new NBTTagCompound());
