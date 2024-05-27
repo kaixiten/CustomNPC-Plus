@@ -1,6 +1,8 @@
 package noppes.npcs.controllers.data;
 
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +19,7 @@ import noppes.npcs.api.handler.data.IAnimationData;
 import noppes.npcs.constants.EnumAnimationPart;
 import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.controllers.PlayerDataController;
+import noppes.npcs.controllers.ScriptController;
 import noppes.npcs.entity.EntityNPCInterface;
 import noppes.npcs.scripted.NpcAPI;
 
@@ -165,10 +168,13 @@ public class AnimationData implements IAnimationData {
 
     public void increaseTime() {
         Animation updateAnimation = null;
-        if (this.isActive()) {
-            updateAnimation = this.animation;
-        } else if (this.isActive(animation.parent.currentClientAnimation)) {
+        if (this.isActive(animation.parent.currentClientAnimation)) {
             updateAnimation = this.currentClientAnimation;
+        } else {
+            this.isClientAnimating = false;
+            if (this.isActive()) {
+                updateAnimation = this.animation;
+            }
         }
 
         if (updateAnimation != null && updateAnimation.increaseTime()) {
@@ -199,11 +205,11 @@ public class AnimationData implements IAnimationData {
         this.viewAnimation(animation, animationData, animationNBT, animationData.allowAnimation, -1, -1);
     }
 
-    public void viewAnimation(Animation animation, AnimationData animationData, NBTTagCompound animationNBT, boolean enabled, int currentFrame, int time) {
+    public boolean viewAnimation(Animation animation, AnimationData animationData, NBTTagCompound animationNBT, boolean enabled, int currentFrame, int time) {
         if (animation != null
             && (currentFrame >= animation.frames.size()
-                || currentFrame >= 0 && animation.frames.get(currentFrame).tickDuration() <= time)) {
-            return;
+                || currentFrame >= 0 && animation.frames.get(currentFrame).getDuration() < time)) {
+            return false;
         }
 
         boolean prevEnabled = animationData.allowAnimation;
@@ -231,6 +237,7 @@ public class AnimationData implements IAnimationData {
         }
 
         Server.sendData((EntityPlayerMP) ((PlayerData) parent).player, EnumPacketClient.UPDATE_ANIMATIONS, data, entity.getCommandSenderName());
+        return true;
     }
 
     public NBTTagCompound viewWriteNBT(NBTTagCompound compound) {
@@ -244,19 +251,26 @@ public class AnimationData implements IAnimationData {
 
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         if (this.currentClientAnimation != null) {
-            compound.setTag("CurrentAnimation", currentClientAnimation.writeToNBT());
             compound.setBoolean("IsClientAnimating", isClientAnimating);
+            if (this.isClientAnimating) {
+                compound.setTag("CurrentAnimation", currentClientAnimation.writeToNBT());
+            }
         }
         compound.setBoolean("AllowAnimation", allowAnimation);
         return compound;
     }
 
     public void readFromNBT(NBTTagCompound compound) {
-        if (compound.hasKey("CurrentAnimation")) {
-            this.currentClientAnimation = new Animation();
-            this.currentClientAnimation.parent = this;
-            this.currentClientAnimation.readFromNBT(compound.getCompoundTag("CurrentAnimation"));
+        Entity entity = this.getMCEntity();
+        boolean isServer = entity != null && !entity.worldObj.isRemote;
+        if (compound.hasKey("IsClientAnimating") && isServer) {
             this.isClientAnimating = compound.getBoolean("IsClientAnimating");
+            if (this.isClientAnimating) {
+                this.currentClientAnimation = new Animation();
+                this.currentClientAnimation.parent = this;
+                this.currentClientAnimation.readFromNBT(compound.getCompoundTag("CurrentAnimation"));
+                this.animation = this.currentClientAnimation;
+            }
         }
         this.setEnabled(compound.getBoolean("AllowAnimation"));
     }
