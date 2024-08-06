@@ -32,7 +32,6 @@ import noppes.npcs.config.ConfigClient;
 import noppes.npcs.constants.EnumGuiType;
 import noppes.npcs.constants.EnumPacketClient;
 import noppes.npcs.constants.EnumPacketServer;
-import noppes.npcs.constants.SyncType;
 import noppes.npcs.controllers.RecipeController;
 import noppes.npcs.controllers.SyncController;
 import noppes.npcs.controllers.data.Animation;
@@ -381,8 +380,14 @@ public class PacketHandlerClient extends PacketHandlerServer{
                 }
 
                 animationData.setAnimation(ClientCacheHandler.animationCache.get(animationId));
-				animationData.readFromNBT(compound);
-                Client.sendData(EnumPacketServer.CacheAnimation, animationId);
+				animationData.viewReadFromNBT(compound);
+
+                if (compound.hasKey("Frame")) {
+                    animationData.animation.readFromNBT(compound.getCompoundTag("Animation"));
+                    animationData.animation.jumpToFrameAtTime(compound.getInteger("Frame"), compound.getInteger("Time"));
+                } else if (compound.hasKey("Animation")) {
+                    Client.sendData(EnumPacketServer.CacheAnimation, animationId);
+                }
 			}
 		}
 		else if(type == EnumPacketClient.DISABLE_MOUSE_INPUT) {

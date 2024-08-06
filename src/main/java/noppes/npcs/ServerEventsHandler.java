@@ -457,7 +457,7 @@ public class ServerEventsHandler {
         PartyController.Instance().pingPartyQuestObjectiveUpdate(party);
         PartyController.Instance().checkQuestCompletion(party, EnumQuestType.Kill);
     }
-    
+
 	@SubscribeEvent
 	public void world(PlayerEvent.SaveToFile event){
 		PlayerData data = PlayerDataController.Instance.getPlayerData((EntityPlayer) event.entity);
@@ -479,12 +479,29 @@ public class ServerEventsHandler {
 
     @SubscribeEvent
     public void playerTracking(PlayerEvent.StartTracking event){
-        if(!(event.target instanceof EntityNPCInterface) || event.target.worldObj.isRemote)
-            return;
+        if (event.target.worldObj.isRemote) return;
 
-        MarkData data = MarkData.get((EntityNPCInterface) event.target);
-        if(data.marks.isEmpty())
-            return;
-        Server.sendData((EntityPlayerMP)event.entityPlayer, EnumPacketClient.MARK_DATA, event.target.getEntityId(), data.getNBT());
+        if(event.target instanceof EntityPlayerMP || event.target instanceof EntityNPCInterface) {
+            AnimationData animationData = AnimationData.getData(event.target);
+            if (animationData.isClientAnimating()) {
+                AnimationData playerAnimData = AnimationData.getData(event.entityPlayer);
+                Animation currentAnimation = animationData.currentClientAnimation;
+                NBTTagCompound compound = currentAnimation.writeToNBT();
+
+                if (playerAnimData.viewAnimation(currentAnimation, animationData, compound,
+                    animationData.isClientAnimating(), currentAnimation.currentFrame, currentAnimation.currentFrameTime)) {
+                    synchronized (CommonProxy.serverPlayingAnimations) {
+                        CommonProxy.serverPlayingAnimations.add(animationData);
+                    }
+                }
+            }
+
+            if (event.target instanceof EntityNPCInterface) {
+                MarkData data = MarkData.get((EntityNPCInterface) event.target);
+                if (data.marks.isEmpty())
+                    return;
+                Server.sendData((EntityPlayerMP) event.entityPlayer, EnumPacketClient.MARK_DATA, event.target.getEntityId(), data.getNBT());
+            }
+        }
     }
 }
