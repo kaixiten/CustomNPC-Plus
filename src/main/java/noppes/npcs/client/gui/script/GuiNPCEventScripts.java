@@ -33,6 +33,10 @@ public class GuiNPCEventScripts extends GuiScriptInterface {
         hookList.add("targetLost");
         hookList.add("projectileTick");
         hookList.add("projectileImpact");
+        hookList.add("animationStart");
+        hookList.add("animationEnd");
+        hookList.add("frameEnter");
+        hookList.add("frameExit");
 
         this.script = new DataScript(npc);
         this.handler = this.script;
