@@ -487,8 +487,13 @@ public class ServerEventsHandler {
                 AnimationData playerAnimData = AnimationData.getData(event.entityPlayer);
                 Animation currentAnimation = animationData.currentClientAnimation;
                 NBTTagCompound compound = currentAnimation.writeToNBT();
-                playerAnimData.viewAnimation(currentAnimation, animationData, compound,
-                    animationData.isClientAnimating(), currentAnimation.currentFrame, currentAnimation.currentFrameTime);
+
+                if (playerAnimData.viewAnimation(currentAnimation, animationData, compound,
+                    animationData.isClientAnimating(), currentAnimation.currentFrame, currentAnimation.currentFrameTime)) {
+                    synchronized (CommonProxy.serverPlayingAnimations) {
+                        CommonProxy.serverPlayingAnimations.add(animationData);
+                    }
+                }
             }
 
             if (event.target instanceof EntityNPCInterface) {
