@@ -10,6 +10,7 @@ public class SubGuiAnimationOptions extends SubGuiInterface implements ITextfiel
     public SubGuiAnimationOptions(Animation animation) {
         this.animation = animation;
         setBackground("smallbg.png");
+        this.closeOnEsc = true;
     }
 
     @Override

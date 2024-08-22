@@ -1207,21 +1207,6 @@ public class PacketHandlerServer{
 			NoppesUtilServer.sendAnimationDataAll(player);
 			Server.sendData(player, EnumPacketClient.GUI_DATA, animation.writeToNBT());
 		}
-        else if(type == EnumPacketServer.CustomFormsGet){
-            DBCAddon.instance.formPacketGets(player, buffer);
-        }
-        else if(type == EnumPacketServer.CustomFormGet){
-            DBCAddon.instance.formPacketGet(player, buffer);
-        }
-        else if(type == EnumPacketServer.CustomFormRemove){
-            DBCAddon.instance.formPacketRemove(player, buffer);
-        }
-        else if(type == EnumPacketServer.CustomFormSave){
-            DBCAddon.instance.formPacketSave(player, buffer);
-        }
-        else if(type == EnumPacketServer.CustomFormSet){
-            DBCAddon.instance.formPacketSet(player, buffer);
-        }
 		else
 			blockPackets(type, buffer, player);
 
@@ -1273,6 +1258,12 @@ public class PacketHandlerServer{
 				player.addChatMessage(new ChatComponentText("Failed to create an entity out of your clone"));
 				return;
 			}
+
+            if (entity instanceof EntityNPCInterface && !ConfigScript.canScript(player, CustomNpcsPermissions.SCRIPT)) {
+                EntityNPCInterface npc = (EntityNPCInterface) entity;
+                npc.script.setEnabled(false);
+            }
+
 			if(ConfigDebug.PlayerLogging && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER){
 				LogWriter.script(String.format("[%s] (Player) %s SPAWNED ENTITY %s", "CLONER", player.getCommandSenderName(), entity));
 			}
@@ -1287,6 +1278,11 @@ public class PacketHandlerServer{
 				compound = ServerCloneController.Instance.getCloneData(player, Server.readString(buffer), buffer.readInt());
 			else
 				compound = Server.readNBT(buffer);
+
+            if (!ConfigScript.canScript(player, CustomNpcsPermissions.SCRIPT)) {
+                return;
+            }
+
 			if(compound != null)
 				NoppesUtilServer.createMobSpawner(x, y, z, compound, player);
 		}

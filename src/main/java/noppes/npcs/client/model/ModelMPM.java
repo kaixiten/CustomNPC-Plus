@@ -52,7 +52,6 @@ public class ModelMPM extends ModelNPCMale{
 	public ModelRenderer bipedRightLegWear;
 	public ModelRenderer bipedLeftLegWear;
 
-	private ModelLegs legs;
 	private ModelScaleRenderer headwear;
 	private ModelScaleRenderer bodywear;
 	private final ModelScaleRenderer solidLeftArmWear;
@@ -60,7 +59,8 @@ public class ModelMPM extends ModelNPCMale{
 	private final ModelScaleRenderer solidLeftLegWear;
 	private final ModelScaleRenderer solidRightLegWear;
 
-	private ModelTail tail;
+    public ModelLegs legs;
+    public ModelTail tail;
 	public ModelBase entityModel;
 	public EntityLivingBase entity;
 
@@ -730,7 +730,7 @@ public class ModelMPM extends ModelNPCMale{
 		to.rotationPointZ = from.rotationPointZ;
 	}
 
-	private void renderHead(EntityCustomNpc entity, float f) {
+    public void renderHead(EntityCustomNpc entity, float f) {
 		loadPlayerTexture(entity);
 		float x = 0;
 		float y = entity.modelData.getBodyY();
@@ -765,7 +765,7 @@ public class ModelMPM extends ModelNPCMale{
 		GL11.glPopMatrix();
 	}
 
-	private void renderBody(EntityCustomNpc entity, float f) {
+	public void renderBody(EntityCustomNpc entity, float f) {
 		loadPlayerTexture(entity);
 		float x = 0;
 		float y = entity.modelData.getBodyY();
@@ -872,7 +872,7 @@ public class ModelMPM extends ModelNPCMale{
 
 		GL11.glPopMatrix();
 	}
-	private void renderLegs(EntityCustomNpc entity, float f) {
+    public void renderLegs(EntityCustomNpc entity, float f) {
 		loadPlayerTexture(entity);
 		ModelScalePart legs = entity.modelData.modelScale.legs;
 
