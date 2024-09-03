@@ -1268,9 +1268,14 @@ public class ScriptNpc<T extends EntityNPCInterface> extends ScriptLiving<T> imp
 		npc.ai.flySpeed = flySpeed;
 	}
 
-	public double getFlySpeed(double flySpeed){
+	public double getFlySpeed(){
 		return npc.ai.flySpeed;
 	}
+
+    @Deprecated
+    public double getFlySpeed(double unused){
+        return this.getFlySpeed();
+    }
 
 	public void setFlyGravity(double flyGravity){
 		if(flyGravity < 0.0D)
@@ -1281,9 +1286,14 @@ public class ScriptNpc<T extends EntityNPCInterface> extends ScriptLiving<T> imp
 		npc.ai.flyGravity = flyGravity;
 	}
 
-	public double getFlyGravity(double flySpeed){
+	public double getFlyGravity(){
 		return npc.ai.flyGravity;
 	}
+
+    @Deprecated
+    public double getFlyGravity(double unused){
+        return this.getFlyGravity();
+    }
 
 	public void setFlyHeightLimit(int flyHeightLimit){
 		if(flyHeightLimit < 0)
@@ -1291,16 +1301,26 @@ public class ScriptNpc<T extends EntityNPCInterface> extends ScriptLiving<T> imp
 
 		this.npc.ai.flyHeightLimit = flyHeightLimit;
 	}
-	public int getFlyHeightLimit(int flyHeightLimit){
+	public int getFlyHeightLimit(){
 		return this.npc.ai.flyHeightLimit;
 	}
+
+    @Deprecated
+    public int getFlyHeightLimit(int unused){
+        return this.getFlyHeightLimit();
+    }
 
 	public void limitFlyHeight(boolean limit){
 		this.npc.ai.hasFlyLimit = limit;
 	}
-	public boolean isFlyHeightLimited(boolean limit){
+	public boolean isFlyHeightLimited(){
 		return this.npc.ai.hasFlyLimit;
 	}
+
+    @Deprecated
+    public boolean isFlyHeightLimited(boolean unused){
+        return this.isFlyHeightLimited();
+    }
 
 	public void setSpeed(double speed) {
 		npc.ai.setWalkingSpeed(speed);
