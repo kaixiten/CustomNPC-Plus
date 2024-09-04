@@ -40,8 +40,19 @@ public abstract class DialogEvent extends CustomNPCsEvent implements IDialogEven
 
     @Cancelable
     public static class DialogOption extends DialogEvent implements IDialogEvent.DialogOption {
-        public DialogOption(IPlayer player, IDialog dialog) {
+        private int optionId;
+
+        public DialogOption(IPlayer player, IDialog dialog, int optionId) {
             super(player, dialog);
+            this.optionId = optionId;
+        }
+
+        public int getOptionId() {
+            return this.optionId;
+        }
+
+        public void setOptionId(int optionId) {
+            this.optionId = optionId;
         }
 
         public String getHookName() {
@@ -51,8 +62,15 @@ public abstract class DialogEvent extends CustomNPCsEvent implements IDialogEven
     }
 
     public static class DialogClosed extends DialogEvent implements IDialogEvent.DialogClosed {
-        public DialogClosed(IPlayer player, IDialog dialog){
+        private final int optionId;
+
+        public DialogClosed(IPlayer player, IDialog dialog, int optionId){
             super(player, dialog);
+            this.optionId = optionId;
+        }
+
+        public int getOptionId() {
+            return optionId;
         }
 
         public String getHookName() {
